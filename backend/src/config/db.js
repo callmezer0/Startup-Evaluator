@@ -1,17 +1,23 @@
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      // These options are no longer needed in Mongoose 6+
-      // but included for compatibility
-    });
-
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.error(`❌ Error: ${error.message}`);
-    process.exit(1); // Exit with failure
+  if (!process.env.MONGODB_URI) {
+    throw new Error("MONGODB_URI is not defined");
   }
+
+  await mongoose.connect(process.env.MONGODB_URI);
+
+  mongoose.connection.on("connected", () => {
+    console.log("MongoDB connected");
+  });
+
+  mongoose.connection.on("error", (err) => {
+    console.error("MongoDB error:", err);
+  });
+
+  mongoose.connection.on("disconnected", () => {
+    console.warn("MongoDB disconnected");
+  });
 };
 
 module.exports = connectDB;

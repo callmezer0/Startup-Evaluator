@@ -1,11 +1,12 @@
+require('dotenv').config();
 const app = require('./app');
 const connectDB = require('./config/db');
-require('dotenv').config();
 
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB
-connectDB();
+if (!process.env.MONGODB_URI) {
+  throw new Error("MONGODB_URI not defined");
+}
 
 // Start server
 app.listen(PORT, () => {
