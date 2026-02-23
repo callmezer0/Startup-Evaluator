@@ -7,7 +7,7 @@ const log = require('../utils/logger');
 // @access  Public
 const createEvaluation = async (req, res, next) => {
   try {
-    const { startupIdea } = req.body;
+    const startupIdea = req.body?.startupIdea;
 
     if (!startupIdea || startupIdea.trim() === '') {
       return res.status(400).json({
@@ -16,7 +16,7 @@ const createEvaluation = async (req, res, next) => {
       });
     }
 
-    log.info(`New evaluation request for: "${startupIdea.substring(0, 50)}..."`);
+    log.info(`New evaluation request for: "${startupIdea.slice(0, 50)}..."`);
 
     // Create initial evaluation record
     const evaluation = await Evaluation.create({
@@ -54,7 +54,7 @@ const createEvaluation = async (req, res, next) => {
 // @access  Public
 const getEvaluation = async (req, res, next) => {
   try {
-    const evaluation = await Evaluation.findById(req.params.id);
+    const evaluation = await Evaluation.findById(req.params.id).lean();
 
     if (!evaluation) {
       return res.status(404).json({
@@ -78,7 +78,7 @@ const getEvaluation = async (req, res, next) => {
 // @access  Public
 const getAllEvaluations = async (req, res, next) => {
   try {
-    const evaluations = await Evaluation.find().sort({ createdAt: -1 });
+    const evaluations = await Evaluation.find().sort({ createdAt: -1 }).lean();
 
     res.status(200).json({
       success: true,
