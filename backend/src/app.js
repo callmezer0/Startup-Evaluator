@@ -4,20 +4,23 @@ const errorHandler = require('./middlewares/errorHandler');
 const evaluationRoutes = require('./routes/evaluationRoutes');
 
 const app = express();
+const urlEncodedOptions = { extended: true };
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Health check route
-app.get('/health', (req, res) => {
+const healthHandler = (req, res) => {
   res.status(200).json({
     success: true,
     message: 'Server is healthy',
     timestamp: new Date().toISOString()
   });
-});
+};
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded(urlEncodedOptions));
+
+// Health check route
+app.get('/health', healthHandler);
 
 // API Routes
 app.use('/api/evaluations', evaluationRoutes);
