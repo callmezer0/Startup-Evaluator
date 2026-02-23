@@ -4,28 +4,45 @@ const errorHandler = require('./middlewares/errorHandler');
 const evaluationRoutes = require('./routes/evaluationRoutes');
 
 const app = express();
-const urlEncodedOptions = { extended: true };
+
+const URL_ENCODED_OPTIONS = { extended: true };
+const HEALTH_ROUTE = '/health';
+const EVALUATIONS_ROUTE = '/api/evaluations';
+
+const sendSuccessResponse = (res, payload, statusCode = 200) => {
+  res.status(statusCode).json({ success: true, ...payload });
+};
 
 const healthHandler = (req, res) => {
-  res.status(200).json({
-    success: true,
+  sendSuccessResponse(res, {
     message: 'Server is healthy',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    uptimeSeconds: Math.floor(process.uptime())
   });
 };
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded(urlEncodedOptions));
+const notFoundHandler = (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found',
+    path: req.originalUrl
+  });
+};
 
-// Health check route
-app.get('/health', healthHandler);
+const registerMiddleware = (expressApp) => {
+  expressApp.use(cors());
+  expressApp.use(express.json());
+  expressApp.use(express.urlencoded(URL_ENCODED_OPTIONS));
+};
 
-// API Routes
-app.use('/api/evaluations', evaluationRoutes);
+const registerRoutes = (expressApp) => {
+  expressApp.get(HEALTH_ROUTE, healthHandler);
+  expressApp.use(EVALUATIONS_ROUTE, evaluationRoutes);
+};
 
-// Error handling middleware (must be last)
+registerMiddleware(app);
+registerRoutes(app);
+app.use(notFoundHandler);
 app.use(errorHandler);
 
 module.exports = app;
