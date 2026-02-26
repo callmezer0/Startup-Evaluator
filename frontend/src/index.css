@@ -1,1 +1,57 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
 @import "tailwindcss";
+
+:root {
+  --surface-0: #f5f6f0;
+  --surface-1: #fffdf6;
+  --surface-2: #f0efe6;
+  --ink-1: #20211f;
+  --ink-2: #585c56;
+  --brand-1: #1e7a57;
+  --brand-2: #0f4f70;
+  --brand-3: #cf6b2d;
+  --line-soft: rgba(22, 30, 22, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Sora', sans-serif;
+  color: var(--ink-1);
+  background:
+    radial-gradient(circle at 8% 0%, rgba(30, 122, 87, 0.16), transparent 48%),
+    radial-gradient(circle at 92% 12%, rgba(15, 79, 112, 0.18), transparent 52%),
+    linear-gradient(160deg, var(--surface-0), var(--surface-1));
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: rgba(30, 122, 87, 0.22);
+  color: var(--ink-1);
+}
+
+@layer components {
+  .glass-panel {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 251, 240, 0.88));
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--line-soft);
+    box-shadow: 0 14px 34px rgba(29, 36, 28, 0.1);
+  }
+
+  .section-shell {
+    max-width: 78rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+}
